@@ -1,17 +1,17 @@
 import java.util.Scanner;
 
+enum gameState {
+    noWinner,
+    Player1Wins,
+    Player2Wins,
+    Draw
+}
+
 public class Main {
     public static void main(String[] args) {
         // TODO: game loop here
-        int gamestate = 0;
-        enum gameState {
-            noWinner,
-            Player1Wins,
-            Player2Wins,
-            Draw
-        }
 
-        // create board here
+        gameState gamestate = gameState.noWinner;
 
         // create player objects
         Player player1 = new Player(true);
@@ -23,32 +23,27 @@ public class Main {
         // initialize board
         Grid gameBoard = new Grid();
 
-        while (gamestate == 0) {
-
+        while (gamestate == gameState.noWinner) {
+            userInput(gameBoard, player1, scanner);
+            userInput(gameBoard, player2, scanner);
         }
     }
 
-    public static void userInput(char[][] board, boolean player, Scanner scanner) {
-
-        for (char[] row : board) {
-            System.out.println(row);
-        }
-
-        System.out.println("PlayerOne Specify Row [0,1,2]:");
-        int x = scanner.nextInt();
-        scanner.nextLine();
+    public static void userInput(Grid board, Player player, Scanner scanner) {
         System.out.println("PlayerOne Specify Column [0,1,2]:");
         int y = scanner.nextInt();
         scanner.nextLine();
+        int x = board.lowestAvailableRow(y);
 
-        if (board[x][y] != '_') {
-            System.out.println("Location aready taken!!");
+        if (x == 999) {
+            System.out.println("That column is already full!!");
             userInput(board, player, scanner);
         } else {
-            if (player) {
-                board[x][y] = 'X';
+            if (player.getColor()) {
+                board.getGrid()[x][y].setSymbol('X');
             } else {
-                board[x][y] = 'O';
+                board.getGrid()[x][y].setSymbol('O');
+                ;
             }
         }
 
