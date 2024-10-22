@@ -7,10 +7,15 @@ enum gameState {
     Draw
 }
 
+enum turnState {
+    Player1Turn,
+    Player2Turn,
+    None
+}
+
 public class Main {
     public static void main(String[] args) {
-        // TODO: game loop here
-
+        // initialize variables
         gameState gamestate = gameState.noWinner;
 
         // create player objects
@@ -30,23 +35,20 @@ public class Main {
     }
 
     public static void userInput(Grid board, Player player, Scanner scanner) {
-        System.out.println("PlayerOne Specify Column [0,1,2]:");
-        int y = scanner.nextInt();
+        System.out.println(board);
+        System.out.println("Player " + player + " Specify Column [0,1,2,3,4,5,6]:");
+        int column = scanner.nextInt();
         scanner.nextLine();
-        int x = board.lowestAvailableRow(y);
+        int row = board.lowestAvailableRow(column);
 
-        if (x == 999) {
+        if (row == 999) {
             System.out.println("That column is already full!!");
             userInput(board, player, scanner);
         } else {
-            if (player.getColor()) {
-                board.getGrid()[x][y].setSymbol('X');
-            } else {
-                board.getGrid()[x][y].setSymbol('O');
-                ;
-            }
+            player.placeDisk(board, column);
         }
 
         return;
     }
+
 }

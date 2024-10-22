@@ -4,6 +4,8 @@ public class Disk {
 
     Disk(char symbol, int row, int column) {
         this.symbol = symbol;
+
+        this.position = new int[2];
         this.position[0] = row;
         this.position[1] = column;
     }
