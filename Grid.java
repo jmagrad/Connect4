@@ -29,8 +29,6 @@ public class Grid {
 
     public gameState checkGameState() {
 
-        
-        
         return gameState.noWinner;
     }
 
@@ -44,5 +42,16 @@ public class Grid {
         }
 
         return line;
+    }
+
+    public Disk getDisk(int row, int column){
+        Disk retDisk;
+        try{
+            retDisk = board[row][column];
+        }catch(ArrayIndexOutOfBoundsException e)
+        {
+            return null;
+        }
+        return retDisk;
     }
 }
