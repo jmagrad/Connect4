@@ -1,8 +1,9 @@
 public class Disk {
+    // class variables
     private char symbol;
     private int[] position;
-    private int streakSize;
 
+    // constructor takes a symbol character and its position in the grid
     Disk(char symbol, int row, int column) {
         this.symbol = symbol;
 
@@ -11,20 +12,16 @@ public class Disk {
         this.position[1] = column;
     }
 
+    // getter for the disk's assigned symbol
     public char getSymbol() {
         return this.symbol;
-    }
-
-    public void placDisk(Grid gameBoard, char symbol) {
-        setSymbol(symbol);
-        checkNeighbors(gameBoard);
-        streakSize = 1;
     }
 
     public void setSymbol(char symbol) {
         this.symbol = symbol;
     }
 
+    // getter and setter for position
     public int[] getPosition() {
         return this.position;
     }
@@ -37,39 +34,50 @@ public class Disk {
         return String.valueOf(symbol);
     }
 
-    public void checkNeighbors(Grid gameBoard) {
-
-        int vertCount = 0;
-        int horzCount = 0;
-        int posAngleCount = 0;
-        int negAngleCount = 0;
-
-        // check vertical
-        gameBoard.getDisk(position[0] + 1, position[1]).getSymbol();
-        gameBoard.getDisk(position[0] - 1, position[1]).getSymbol();
-
-        // check horizontal
-        gameBoard.getDisk(position[0], position[1] - 1);
-        gameBoard.getDisk(position[0], position[1] + 1);
-
-        // check positive angle
-        gameBoard.getDisk(position[0] + 1, position[1] + 1);
-        gameBoard.getGrid()[position[0] - 1][position[1] - 1].getSymbol();
-
-        // check negative angle
-        gameBoard.getGrid()[position[0] - 1][position[1] + 1].getSymbol();
-        gameBoard.getGrid()[position[0] + 1][position[1] - 1].getSymbol();
-
+    // assign a given symbe and use check neighbors for a win condition
+    public void placDisk(Grid gameBoard, char symbol) {
+        setSymbol(symbol);
+        // let gameboard know that this is the most recently placed disk
+        gameBoard.setLastPiece(position[0], position[1]);
     }
 
-    private int checkNext(Grid gameBoard, int[] nextPosition, int count, char symbol) {
-        if(gameBoard.getDisk(nextPosition[0], nextPosition[1]).getSymbol()==symbol)
-        {
-            count++;
-            checkNext(gameBoard, nextPosition, count, symbol)
-        }else{
-
+    // checks all 4 vectors for a string of like symbols totaling 4 or greater
+    public boolean checkNeighbors(Grid gameBoard) {
+        // if this is called on an empty space return
+        if (symbol == '_') {
+            return false;
         }
+        // possible directions to connnect
+        int[][] directions = { { 0, 1 }, { 1, 0 }, { 1, 1 }, { 1, -1 } };
+
+        // loop through and call check direction being sure to check the opposite way
+        // too for the total
+        for (int[] direction : directions) {
+            if (checkDirection(gameBoard.getGrid(), direction[0], direction[1]) +
+                    checkDirection(gameBoard.getGrid(), -direction[0], -direction[1]) - 1 >= 4) {
+                return true;
+            }
+        }
+        // no win condition found, return false
+        return false;
+    }
+
+    // takes a given direction and its gameboard and counts how many matching
+    // symbols exist on that vector
+    private int checkDirection(Disk[][] grid, int rowDir, int colDir) {
+        int count = 0;
+        int row = position[0];
+        int col = position[1];
+        // continue along a vector until you are out of bounds or ecounter a symbol that
+        // does not match this disk
+        // count matching disks along the way and return count
+        while (row >= 0 && row < grid.length && col >= 0 && col < grid[0].length
+                && grid[row][col].symbol == symbol) {
+            count++;
+            row += rowDir;
+            col += colDir;
+        }
+
         return count;
     }
 }
